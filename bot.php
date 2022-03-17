@@ -5,7 +5,7 @@ ini_set('display_errors', 0);
 
 $update = json_decode(file_get_contents("php://input"), TRUE);
 
-// %0A - new line
+// %0A - new line in text
 // strpos - find the position of the first occurrence of a substring in a string.
 // strcmp - string comparison, if returns 0 two strings are equal.
 // More info about requests: https://core.telegram.org/bots/api#making-requests
@@ -35,7 +35,7 @@ if ($update != null) {
             $language = 1;
            break;
         case strpos($message, "/help") === 0: 
-            $argument = substr($message, 6);
+            $argument = substr($message, 6);    // 6 -> start at the offset'th position
             if (strpos(strtolower($argument), "text") !== false) {  // argument -> text...
                 if ($language == 0) {
                     file_get_contents($path."/sendmessage?chat_id=".$chatId."&text=❓Pagalba pagal ".$argument." argumenta.");
@@ -45,7 +45,7 @@ if ($update != null) {
                 }
             }
             else {
-                file_get_contents($path."/sendmessage?chat_id=".$chatId."&text=❓Help by ".$argument.".");
+                file_get_contents($path."/sendmessage?chat_id=".$chatId."&text=❓Help by other ".$argument.".");
             }
             break;
         $conn->close();
@@ -58,13 +58,11 @@ else {
 
 function startUsing($userId, $firstName, $conn) {
     $result = $conn->query("REPLACE INTO Users (userid, name) values('$userId', '$firstName')"); 
-
     $conn->close();
     return $result;
 }
 function whichLanguage($userId, $whichLanguage, $conn) {
     $result = $conn->query("UPDATE Users SET language='$whichLanguage' WHERE userid='$userId'"); 
-
     $conn->close();
     return $result;
 }
